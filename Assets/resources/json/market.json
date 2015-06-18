@@ -1,0 +1,51 @@
+{
+	"buildings": [
+		{
+			"name": "House",
+			"img": "resources/images/buildings/building_01.png",
+			"energy": 100,
+			"food": 25,
+			"water": 50,
+			"materials": 100,
+			"research": 25
+		},
+		{
+			"name": "House",
+			"img": "resources/images/buildings/building_01.png",
+			"energy": 100,
+			"food": 25,
+			"water": 50,
+			"materials": 100,
+			"research": 25
+		},
+		{
+			"name": "House",
+			"img": "resources/images/buildings/building_01.png",
+			"energy": 100,
+			"food": 25,
+			"water": 50,
+			"materials": 100,
+			"research": 25
+		},
+		{
+			"name": "House",
+			"img": "resources/images/buildings/building_01.png",
+			"energy": 100,
+			"food": 25,
+			"water": 50,
+			"materials": 100,
+			"research": 25
+		}
+	],
+	"upgrades": [
+		{
+			"name": "Hoe",
+			"img": "resources/images/upgrades/upgrade_01.png",
+			"energy": 100,
+			"food": 25,
+			"water": 50,
+			"materials": 100,
+			"research": 25
+		}
+	]
+}

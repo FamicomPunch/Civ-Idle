@@ -1,0 +1,77 @@
+body {
+	margin: 0;
+	font-family: 'Walter Turncoat', cursive;
+	background-color: #90AFD6;
+}
+.unstyled-list {
+	padding: 0;
+	margin:  0;
+	list-style: none;
+}
+#score {
+	display: flex;
+	position: fixed;
+	top: 0;
+	width: 100vw;
+	justify-content: center;
+}
+#score div {
+	background-color: #333333;
+	color: #ffffff;
+	padding: 8px;
+}
+#market {
+	position: fixed;
+	bottom: 0;
+	width: 100vw;
+}
+#market-nav {
+	display: flex;
+	height: 40px;
+}
+.market-tab {
+	width: 120px;
+	background-color: #cccccc;
+	text-align: center;
+	cursor: pointer;
+	border-top-left-radius: 10px;
+	border-top-right-radius: 10px;
+	padding-top: 8px;
+}
+.market-tab-active {
+	background-color: #ffffff;
+}
+.market-page {
+	display: flex;
+	height: 218px;
+	padding: 16px;
+	background-color: #ffffff;
+	overflow-x: scroll;
+	white-space: nowrap;
+}
+.item {
+	width: 124px;
+	margin-right: 16px;
+	background-color: #ffffff;
+	padding: 16px;
+	border: solid 2px #000000;
+	border-top: solid 2px #999999;
+	border-left: solid 2px #999999;
+	cursor: pointer
+}
+.not-for-sale {
+	opacity: 0.5;
+	cursor: default;
+}
+.item-img {
+	display: block;
+	width: 126px;
+	border: solid 1px #333333;
+}
+.item-name {
+	display: block;
+	font-size: 1.1em;
+}
+.item-price {
+	display: block;
+}

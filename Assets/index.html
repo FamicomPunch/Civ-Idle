@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="Game" ng-controller="GameController">
+<head>
+	<meta charset="UTF-8">
+	<title ng-bind="score + ' - Idle Game'"></title>
+	<!-- CSS -->
+	<link rel="stylesheet" type="text/css" href="main.css">
+	<!-- Fonts -->
+	<link href='http://fonts.googleapis.com/css?family=Walter+Turncoat' rel='stylesheet' type='text/css'>
+</head>
+<body>
+	<div id="score">
+		<div ng-bind="score"></div>
+	</div>
+	<ul class="unstyled-list">
+		<li ng-bind="'Energy: ' + resources.energy"></li>
+		<li ng-bind="'Food: ' + resources.food"></li>
+		<li ng-bind="'Water: ' + resources.water"></li>
+		<li ng-bind="'Materials: ' + resources.materials"></li>
+		<li ng-bind="'Research: ' + resources.research"></li>
+	</ul>
+	<input type="button" value="Energy" ng-click="addResource('energy')"/>
+	<input type="button" value="Food" ng-click="addResource('food')"/>
+	<input type="button" value="water" ng-click="addResource('water')"/>
+	<input type="button" value="materials" ng-click="addResource('materials')"/>
+	<input type="button" value="research" ng-click="addResource('research')"/>
+	<!-- Market -->
+	<div id="market" ng-controller="MarketController">
+		<nav id="market-nav">
+			<div class="market-tab" ng-class="{'market-tab-active':isSelected(1)}" ng-click="selectPage(1)">Buildings</div>
+			<div class="market-tab" ng-class="{'market-tab-active':isSelected(2)}" ng-click="selectPage(2)">Upgrades</div>
+		</nav>
+		<div id="page-1" class="market-page" ng-show="isSelected(1)">
+			<div ng-repeat="building in buildings" class="item" ng-class="{'not-for-sale':isNotForSale(building.price)}">
+				<img class="item-img" ng-src="{{ building.img }}"></img>
+				<span class="item-name" ng-bind="building.name"></span>
+				<span class="item-price" ng-bind="building.price"></span>
+			</div>
+		</div>
+		<div id="page-2" class="market-page" ng-show="isSelected(2)">
+			<div ng-repeat="upgrade in upgrades" class="item" ng-class="{'not-for-sale':isNotForSale(upgrade.price)}">
+				<img class="item-img" ng-src="{{ upgrade.img }}"></img>
+				<span class="item-name" ng-bind="upgrade.name"></span></span>
+				<span class="item-price" ng-bind="upgrade.price"></span>	
+			</div>
+		</div>
+	</div>
+</body>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.0/angular.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.0/angular-cookies.min.js"></script>
+<script>
+	// Angular Game Module
+	var gameModule = angular.module("Game", ["ngCookies"]);
+	gameModule.run(["$rootScope", "cookieService", function($rootScope, cookieService) {
+		$rootScope.score = 0;
+		$rootScope.resources = {
+			energy: 0,
+			food: 0,
+			water: 0,
+			materials: 0,
+			research: 0
+		};
+		cookieService.initProgress();
+	}]);
+	
+	// Cookies!!!
+	gameModule.service("cookieService", ["$rootScope", "$cookies", function($rootScope, $cookies) {
+		this.initProgress = function() {
+			for (var resource in $rootScope.resources) {
+				if ($cookies.get(resource) === undefined) {
+					$cookies.put(resource, $rootScope.resources[resource]);
+				} else {
+					$rootScope.resources[resource] = parseFloat($cookies.get(resource));
+				}
+			}
+			this.updateScore();
+		};
+		this.updateResource = function(name, value) {
+			$rootScope.resources[name] = value;
+			this.saveProgress(name, value);
+			this.updateScore();
+		};
+		this.saveProgress = function(name, value) {
+			$cookies.put(name, value);
+		};
+		this.updateScore = function() {
+			var sum = 0;
+			for (var resource in $rootScope.resources) {
+				sum += $rootScope.resources[resource];
+			}
+			$rootScope.score = sum;
+		};
+	}]);
+	
+	// Market Inventory
+	gameModule.service("marketService", ["$http", "$q", function($http, $q) {
+		var deferred = $q.defer();
+		$http.get("resources/json/market.json").then(function(data) {
+			deferred.resolve(data);
+		});
+		this.getMarketItems = function() {
+			return deferred.promise;
+		};
+	}]);
+	
+	// Main Controller
+	gameModule.controller("GameController", ["$rootScope", "$scope", "cookieService", function ($rootScope, $scope, cookieService) {
+		$scope.addResource = function(resourceName) {
+			cookieService.updateResource(resourceName, $rootScope.resources[resourceName] + 1);
+		};
+	}]);
+	
+	// Market Controller
+	gameModule.controller("MarketController", ["$rootScope", "$scope", "marketService", function($rootScope, $scope, marketService) {
+		// Tabs
+		$scope.currentPage = 1;
+		$scope.selectPage = function(pageNum) {
+			$scope.currentPage = pageNum;
+		};
+		$scope.isSelected = function(pageNum) {
+			return pageNum === $scope.currentPage;
+		};
+		// Shops
+		var promise = marketService.getMarketItems();
+		promise.then(function(data) {
+			$scope.buildings = data.data.buildings;
+			$scope.upgrades = data.data.upgrades;
+		});
+		$scope.isNotForSale = function(price) {
+			return $rootScope.score < price;
+		};
+	}]);
+</script>
+</html>
