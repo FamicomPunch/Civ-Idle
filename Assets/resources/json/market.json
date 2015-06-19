@@ -1,51 +1,130 @@
 {
 	"buildings": [
 		{
-			"name": "House",
+			"name": "Cave",
 			"img": "resources/images/buildings/building_01.png",
-			"energy": 100,
-			"food": 25,
-			"water": 50,
-			"materials": 100,
-			"research": 25
+			"energy": 15,
+			"food": 0,
+			"water": 0,
+			"materials": 0,
+			"research": 0,
+			"Description": "A place to rest (+0.1/s)"
 		},
 		{
-			"name": "House",
+			"name": "Puddle",
 			"img": "resources/images/buildings/building_01.png",
-			"energy": 100,
-			"food": 25,
-			"water": 50,
-			"materials": 100,
-			"research": 25
+			"energy": 5,
+			"food": 0,
+			"water": 15,
+			"materials": 0,
+			"research": 0,
+			"Description": "Somehow safe to drink (+.1/s)"
 		},
 		{
-			"name": "House",
+			"name": "Bush",
 			"img": "resources/images/buildings/building_01.png",
-			"energy": 100,
-			"food": 25,
-			"water": 50,
-			"materials": 100,
-			"research": 25
+			"energy": 5,
+			"food": 15,
+			"water": 0,
+			"materials": 0,
+			"research": 0,
+			"Description": "Blueberries. At least they're edible... (.1/s)"
 		},
 		{
-			"name": "House",
+			"name": "Tent",
 			"img": "resources/images/buildings/building_01.png",
 			"energy": 100,
-			"food": 25,
-			"water": 50,
-			"materials": 100,
-			"research": 25
+			"food": 0,
+			"water": 0,
+			"materials": 0,
+			"research": 0,
+			"Description": "More like a large piece of bark (1/s)"
+		},
+		{
+			"name": "Fruit Tree",
+			"img": "",
+			"energy": 10,
+			"food": 100,
+			"water": 10,
+			"materials": 0,
+			"research": 0,
+			"Description": "It *might* be an apple... (1/s)"
+		},
+		{
+			"name": "Pond",
+			"img": "",
+			"energy": 10,
+			"food": 10,
+			"water": 100,
+			"materials": 0,
+			"research": 0,
+			"Description": "No fishing because no fish. (1/s)"
+		},
+		{
+			"name": "Researcher",
+			"img": "",
+			"energy": 1000,
+			"food": 100,
+			"water": 100,
+			"materials": 0,
+			"research": 0
+			"Description": "SCIENCE! (+.1/s)"
 		}
+		{
+			"name": "Gatherer",
+			"img": "",
+			"energy": 1000,
+			"food": 50,
+			"water": 50,
+			"materials": 0,
+			"research": 5,
+			"Description": "Man, these guys are slow. (+.1/s)"
+		},
+
+
+
 	],
 	"upgrades": [
 		{
-			"name": "Hoe",
+			"name": "Crafting",
 			"img": "resources/images/upgrades/upgrade_01.png",
-			"energy": 100,
-			"food": 25,
-			"water": 50,
-			"materials": 100,
-			"research": 25
-		}
+			"energy": 5,
+			"food": 0,
+			"water": 0,
+			"materials": 0,
+			"research": 10,
+			"Description": "Unlocks upgrades & gatherers"
+		},
+		{
+			"name": "Knife",
+			"img": "",
+			"energy": 50,
+			"food": 0,
+			"water": 0,
+			"materials": 10,
+			"research": 100
+			"Description": "Sharp! (Doubles energy generation)"
+		},
+		{
+			"name": "Bag",
+			"img": "",
+			"energy": 50,
+			"food": 0,
+			"water": 0,
+			"materials": 10,
+			"research": 100,
+			"Description": "Carry more berries! (Doubles food generation)"
+		},
+		{
+			"name": "Bottle",
+			"img": "",
+			"energy": 50,
+			"food": 0,
+			"water": 0,
+			"materials": 10,
+			"research": 100,
+			"Description": "Thirst quencher! (Doubles water production)"
+		},
+
 	]
 }

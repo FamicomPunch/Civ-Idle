@@ -18,12 +18,24 @@
 		<li ng-bind="'Water: ' + resources.water"></li>
 		<li ng-bind="'Materials: ' + resources.materials"></li>
 		<li ng-bind="'Research: ' + resources.research"></li>
+		<li ng-bind="'Energy Multi: ' + multiplier.energy"></li>
+		<li ng-bind="'Food Multi: ' + multiplier.food"></li>
+		<li ng-bind="'Water Multi: ' + multiplier.water"></li>
+		<li ng-bind="'Materials Multi: ' + multiplier.materials"></li>
+		<li ng-bind="'Research Multi: ' + multiplier.research"></li>
+		<li ng-bind="'Global Multi: ' + multiplier.global"></li>
 	</ul>
 	<input type="button" value="Energy" ng-click="addResource('energy')"/>
 	<input type="button" value="Food" ng-click="addResource('food')"/>
-	<input type="button" value="water" ng-click="addResource('water')"/>
-	<input type="button" value="materials" ng-click="addResource('materials')"/>
-	<input type="button" value="research" ng-click="addResource('research')"/>
+	<input type="button" value="Water" ng-click="addResource('water')"/>
+	<input type="button" value="Materials" ng-click="addResource('materials')"/>
+	<input type="button" value="Research" ng-click="addResource('research')"/>
+	<input type="button" value="Energy Multi" ng-click="addUpgrade('energy')"/>
+	<input type="button" value="Food Multi" ng-click="addUpgrade('food')"/>
+	<input type="button" value="Water Multi" ng-click="addUpgrade('water')"/>
+	<input type="button" value="Materials Multi" ng-click="addUpgrade('materials')"/>
+	<input type="button" value="Research Multi" ng-click="addUpgrade('research')"/>
+	<input type="button" value="Global Multi" ng-click="addUpgrade('global')"/>
 	<!-- Market -->
 	<div id="market" ng-controller="MarketController">
 		<nav id="market-nav">
@@ -60,6 +72,14 @@
 			materials: 0,
 			research: 0
 		};
+		$rootScope.multiplier = {
+			energy: 1,
+			food: 1,
+			water: 1,
+			materials: 0,
+			research: 0,
+			global: 1
+		};
 		cookieService.initProgress();
 	}]);
 	
@@ -73,12 +93,25 @@
 					$rootScope.resources[resource] = parseFloat($cookies.get(resource));
 				}
 			}
+			for (var multiplier in $rootScope.multiplier) {
+				if ($cookies.get(multiplier) === undefined) {
+					$cookies.put(multiplier, $rootScope.multiplier[multiplier]);
+				} else {
+					$rootScope.multiplier[multiplier] = parseFloat($cookies.get(multiplier));
+				}
+			}
 			this.updateScore();
 		};
 		this.updateResource = function(name, value) {
 			$rootScope.resources[name] = value;
 			this.saveProgress(name, value);
 			this.updateScore();
+		};
+		//MH Updating Multiplier Test
+		this.updateUpgrade = function(name, value) {
+			$rootScope.multiplier[name] = value;
+			this.saveProgress(name, value);
+			//this.updateScore();
 		};
 		this.saveProgress = function(name, value) {
 			$cookies.put(name, value);
@@ -103,10 +136,13 @@
 		};
 	}]);
 	
-	// Main Controller
+	// Game Controller
 	gameModule.controller("GameController", ["$rootScope", "$scope", "cookieService", function ($rootScope, $scope, cookieService) {
+		$scope.addUpgrade = function(resourceName) {
+		cookieService.updateUpgrade(resourceName, $rootScope.multiplier[resourceName] + 1);
+		}
 		$scope.addResource = function(resourceName) {
-			cookieService.updateResource(resourceName, $rootScope.resources[resourceName] + 1);
+			cookieService.updateResource(resourceName, $rootScope.resources[resourceName] + 1*$rootScope.multiplier[resourceName]*$rootScope.multiplier.global);
 		};
 	}]);
 	
