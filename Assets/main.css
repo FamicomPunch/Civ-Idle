@@ -60,7 +60,7 @@ body {
 	opacity: 0.5;
 }
 .available {
-	opacity: 1.0;
+	opacity: 1.0 !important;
 }
 .item-img {
 	display: block;

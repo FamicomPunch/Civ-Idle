@@ -63,7 +63,7 @@
 <script>
 	// Angular Game Module
 	var gameModule = angular.module("Game", ["ngCookies"]);
-	gameModule.run(["$rootScope", "cookieService", function($rootScope, cookieService) {
+	gameModule.run(["$rootScope", "jsonService", "cookieService", function($rootScope, jsonService, cookieService) {
 		$rootScope.score = 0;
 		$rootScope.resources = {
 			energy: 0,
@@ -80,7 +80,24 @@
 			research: 0,
 			global: 1
 		};
-		$rootScope.buildingSet = {};
+		$rootScope.buildingSet = {}; // number of buildings owned
+		$rootScope.buildings = {};
+		$rootScope.upgrades = {};
+		var promise = jsonService.getMarketItems();
+		promise.then(function(data) {
+			var buildingArray = data.data.buildings;
+			for(var i = 0; i < buildingArray.length; i++) {
+				$rootScope.buildings[buildingArray[i].name] = buildingArray[i];
+			}
+			var upgradeArray = data.data.upgrades;
+			for(var i = 0; i < upgradeArray.length; i++) {
+				$rootScope.upgrades[upgradeArray[i].name] = upgradeArray[i];
+			}
+			// initialize buildingSet once JSON is loaded
+			for(var i = 0; i < $rootScope.buildings.length; i++) {
+				$rootScope.buildingSet[$rootScope.buildings[i].name] = 0;
+			}
+		});
 		cookieService.initProgress();
 	}]);
 	
@@ -126,8 +143,8 @@
 		};
 	}]);
 	
-	// Market Inventory
-	gameModule.service("marketService", ["$http", "$q", function($http, $q) {
+	// JSON service (market items)
+	gameModule.service("jsonService", ["$http", "$q", function($http, $q) {
 		var deferred = $q.defer();
 		$http.get("resources/json/market.json").then(function(data) {
 			deferred.resolve(data);
@@ -141,14 +158,13 @@
 	gameModule.controller("GameController", ["$rootScope", "$scope", "cookieService", function ($rootScope, $scope, cookieService) {
 		$scope.addUpgrade = function(resourceName) {
 		cookieService.updateUpgrade(resourceName, $rootScope.multiplier[resourceName] + 1);
-		}
+		};
 		$scope.addResource = function(resourceName) {
 			cookieService.updateResource(resourceName, $rootScope.resources[resourceName] + 1*$rootScope.multiplier[resourceName]*$rootScope.multiplier.global);
 		};
 	}]);
-	
 	// Market Controller
-	gameModule.controller("MarketController", ["$rootScope", "$scope", "marketService", function($rootScope, $scope, marketService) {
+	gameModule.controller("MarketController", ["$rootScope", "$scope", "jsonService", function($rootScope, $scope, jsonService) {
 		// Tabs
 		$scope.currentPage = 1;
 		$scope.selectPage = function(pageNum) {
@@ -158,45 +174,36 @@
 			return pageNum === $scope.currentPage;
 		};
 		// Shops
-		var promise = marketService.getMarketItems();
-		promise.then(function(data) {
-			$scope.buildings = data.data.buildings;
-			$scope.upgrades = data.data.upgrades;
-			// initialize buildingSet once JSON is loaded
-			for(var i = 0; i < $scope.buildings.length; i++) {
-				$rootScope.buildingSet[$scope.buildings[i].name] = 0;
+		$scope.buildings = $rootScope.buildings;
+		$scope.upgrades = $rootScope.buildings;
+		$scope.isBuildingAvailable = function(buildingName) {
+			var b = $scope.buildings[buildingName];
+			var r = $rootScope.resources;
+			if(r.energy >= b.energy && r.food >= b.food && r.water >= b.water && r.materials >= b.materials && r.research >= b.research) {
+				return true;
 			}
-			$scope.isBuildingAvailable = function(buildingName) {
-				var b = $scope.buildings[buildingName];
-				var r = $rootScope;
-				if(b.energy >= r.energy && b.food >= r.food && b.water >= r.water && b.materials >= r.materials && b.research >= r.research) {
-					return true;
-				}
-				return false;
-			};
-			$scope.isUpgradeAvailable = function(upgradeName) {
-				var u = $scope.upgrades[upgradeName];
-				var r = $rootScope;
-				if(u.energy >= r.energy && u.food >= r.food && u.water >= r.water && u.materials >= r.materials && u.research >= r.research) {
-					return true;
-				}
-				return false;
-			};
-			$scope.purchaseBuilding = function(buildingName) {
-				if ($scope.building != undefined) {
-					var b = $scope.buildings[buildingName];
-					var r = $rootScope;
-					if(b.energy >= r.energy && b.food >= r.food && b.water >= r.water && b.materials >= r.materials && b.research >= r.research) {
-						$rootScope.buildingSet[buildingName] += 1;
-						r.energy -= b.energy;
-						r.food -= b.food;
-						r.water -= b.water;
-						r.materials -= b.materials;
-						r.research -= b.research;
-					}
-				}
-			};
-		});
+			return false;
+		};
+		$scope.isUpgradeAvailable = function(upgradeName) {
+			var u = $scope.upgrades[upgradeName];
+			var r = $rootScope.resources;
+			if(r.energy >= u.energy && r.food >= u.food && r.water >= u.water && r.materials >= u.materials && r.research >= u.research) {
+				return true;
+			}
+			return false;
+		};
+		$scope.purchaseBuilding = function(buildingName) {
+			var b = $rootScope.buildings[buildingName];
+			var r = $rootScope.resources;
+			if(r.energy >= b.energy && r.food >= b.food && r.water >= b.water && r.materials >= b.materials && r.research >= b.research) {
+				$rootScope.buildingSet[buildingName] += 1;
+				r.energy -= b.energy;
+				r.food -= b.food;
+				r.water -= b.water;
+				r.materials -= b.materials;
+				r.research -= b.research;
+			}
+		};
 	}]);
 </script>
 </html>
