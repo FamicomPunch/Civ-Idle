@@ -49,7 +49,7 @@ body {
 	overflow-x: scroll;
 	white-space: nowrap;
 }
-.item {
+.item-front {
 	width: 124px;
 	margin-right: 16px;
 	background-color: #ffffff;
@@ -58,6 +58,16 @@ body {
 	border-top: solid 2px #999999;
 	border-left: solid 2px #999999;
 	opacity: 0.5;
+}
+.item-back {
+	display:none;
+	width: 124px;
+	margin-right: 16px;
+	background-color: #ffffff;
+	padding: 16px;
+	border: solid 2px #000000;
+	border-top: solid 2px #999999;
+	border-left: solid 2px #999999;
 }
 .available {
 	opacity: 1.0 !important;
@@ -71,6 +81,23 @@ body {
 	display: block;
 	font-size: 1.1em;
 }
-.item-price {
-	display: block;
+.energy {
+	display: inline-block;
+	color: #ff55ff;
+}
+.food {
+	display: inline-block;
+	color: #00ff00;
+}
+.water {
+	display: inline-block;
+	color: #0000ff;
+}
+.materials {
+	display: inline-block;
+	color: #333333;
+}
+.research {
+	display: inline-block;
+	color: #ff00ff;
 }

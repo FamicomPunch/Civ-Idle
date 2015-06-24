@@ -43,17 +43,29 @@
 			<div class="market-tab" ng-class="{'market-tab-active':isSelected(2)}" ng-click="selectPage(2)">Upgrades</div>
 		</nav>
 		<div id="page-1" class="market-page" ng-show="isSelected(1)">
-			<div ng-repeat="building in buildings" class="item" ng-class="{'available':isBuildingAvailable(building.name)}">
+			<div ng-repeat="building in buildings" class="item-front" ng-class="{'available':isBuildingAvailable(building.name)}" ng-click="purchaseBuilding(building.name)">
 				<img class="item-img" ng-src="{{ building.img }}"></img>
 				<span class="item-name" ng-bind="building.name"></span>
-				<button ng-click="purchaseBuilding(building.name)">Purchase</button>
+				<span class="energy" ng-bind="building.energy"></span>
+				<span class="food" ng-bind="building.food"></span>
+				<span class="water" ng-bind="building.water"></span>
+				<span class="materials" ng-bind="building.materials"></span>
+				<span class="research" ng-bind="building.research"></span>
+			</div>
+			<div class="item-back">
+				<span ng-bind="building.description"></span>
 			</div>
 		</div>
 		<div id="page-2" class="market-page" ng-show="isSelected(2)">
-			<div ng-repeat="upgrade in upgrades" class="item" ng-class="{'available':isUpgradeAvailable(upgrade.name)}">
+			<div ng-repeat="upgrade in upgrades" class="item-front" ng-class="{'available':isUpgradeAvailable(upgrade.name)}">
 				<img class="item-img" ng-src="{{ upgrade.img }}"></img>
 				<span class="item-name" ng-bind="upgrade.name"></span></span>
-				<span class="item-price" ng-bind="upgrade.price"></span>	
+				<span class="item-price" ng-bind="upgrade.price"></span>
+				<span class="energy" ng-bind="upgrade.energy"></span>
+				<span class="food" ng-bind="upgrade.food"></span>
+				<span class="water" ng-bind="upgrade.water"></span>
+				<span class="materials" ng-bind="upgrade.materials"></span>
+				<span class="research" ng-bind="upgrade.research"></span>	
 			</div>
 		</div>
 	</div>
@@ -76,8 +88,8 @@
 			energy: 1,
 			food: 1,
 			water: 1,
-			materials: 0,
-			research: 0,
+			materials: 1,
+			research: 1,
 			global: 1
 		};
 		$rootScope.buildingSet = {}; // number of buildings owned
@@ -131,9 +143,11 @@
 			this.saveProgress(name, value);
 			//this.updateScore();
 		};
+		// Do not invoke use updateResource instead
 		this.saveProgress = function(name, value) {
 			$cookies.put(name, value);
 		};
+		// Do not invoke use updateResource instead
 		this.updateScore = function() {
 			var sum = 0;
 			for (var resource in $rootScope.resources) {
@@ -164,7 +178,7 @@
 		};
 	}]);
 	// Market Controller
-	gameModule.controller("MarketController", ["$rootScope", "$scope", "jsonService", function($rootScope, $scope, jsonService) {
+	gameModule.controller("MarketController", ["$rootScope", "$scope", "cookieService", function($rootScope, $scope, cookieService) {
 		// Tabs
 		$scope.currentPage = 1;
 		$scope.selectPage = function(pageNum) {
@@ -193,17 +207,15 @@
 			return false;
 		};
 		$scope.purchaseBuilding = function(buildingName) {
-			var b = $rootScope.buildings[buildingName];
-			var r = $rootScope.resources;
-			if(r.energy >= b.energy && r.food >= b.food && r.water >= b.water && r.materials >= b.materials && r.research >= b.research) {
+			if($scope.isBuildingAvailable(buildingName)) {
 				$rootScope.buildingSet[buildingName] += 1;
-				r.energy -= b.energy;
-				r.food -= b.food;
-				r.water -= b.water;
-				r.materials -= b.materials;
-				r.research -= b.research;
+				for(var resource in $rootScope.resources) {
+					var resourceValue = $rootScope.resources[resource] - ($rootScope.buildings[buildingName])[resource];
+					cookieService.updateResource(resource, resourceValue);
+				}
 			}
 		};
+		// PURCHASE UPGRADE FUNCTION
 	}]);
 </script>
 </html>
