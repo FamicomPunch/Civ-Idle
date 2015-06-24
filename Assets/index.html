@@ -52,9 +52,6 @@
 				<span class="materials" ng-bind="building.materials"></span>
 				<span class="research" ng-bind="building.research"></span>
 			</div>
-			<div class="item-back">
-				<span ng-bind="building.description"></span>
-			</div>
 		</div>
 		<div id="page-2" class="market-page" ng-show="isSelected(2)">
 			<div ng-repeat="upgrade in upgrades" class="item-front" ng-class="{'available':isUpgradeAvailable(upgrade.name)}">
@@ -189,7 +186,7 @@
 		};
 		// Shops
 		$scope.buildings = $rootScope.buildings;
-		$scope.upgrades = $rootScope.buildings;
+		$scope.upgrades = $rootScope.upgrades;
 		$scope.isBuildingAvailable = function(buildingName) {
 			var b = $scope.buildings[buildingName];
 			var r = $rootScope.resources;

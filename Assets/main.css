@@ -59,16 +59,6 @@ body {
 	border-left: solid 2px #999999;
 	opacity: 0.5;
 }
-.item-back {
-	display:none;
-	width: 124px;
-	margin-right: 16px;
-	background-color: #ffffff;
-	padding: 16px;
-	border: solid 2px #000000;
-	border-top: solid 2px #999999;
-	border-left: solid 2px #999999;
-}
 .available {
 	opacity: 1.0 !important;
 }
