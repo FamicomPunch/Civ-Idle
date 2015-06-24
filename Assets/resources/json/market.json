@@ -67,9 +67,9 @@
 			"food": 100,
 			"water": 100,
 			"materials": 0,
-			"research": 0
+			"research": 0,
 			"Description": "SCIENCE! (+.1/s)"
-		}
+		},
 		{
 			"name": "Gatherer",
 			"img": "",
@@ -79,10 +79,7 @@
 			"materials": 0,
 			"research": 5,
 			"Description": "Man, these guys are slow. (+.1/s)"
-		},
-
-
-
+		}
 	],
 	"upgrades": [
 		{
@@ -102,7 +99,7 @@
 			"food": 0,
 			"water": 0,
 			"materials": 10,
-			"research": 100
+			"research": 100,
 			"Description": "Sharp! (Doubles energy generation)"
 		},
 		{
@@ -124,7 +121,7 @@
 			"materials": 10,
 			"research": 100,
 			"Description": "Thirst quencher! (Doubles water production)"
-		},
+		}
 
 	]
 }

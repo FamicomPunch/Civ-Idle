@@ -43,14 +43,14 @@
 			<div class="market-tab" ng-class="{'market-tab-active':isSelected(2)}" ng-click="selectPage(2)">Upgrades</div>
 		</nav>
 		<div id="page-1" class="market-page" ng-show="isSelected(1)">
-			<div ng-repeat="building in buildings" class="item" ng-class="{'not-for-sale':isNotForSale(building.price)}">
+			<div ng-repeat="building in buildings" class="item" ng-class="{'available':isBuildingAvailable(building.name)}">
 				<img class="item-img" ng-src="{{ building.img }}"></img>
 				<span class="item-name" ng-bind="building.name"></span>
-				<span class="item-price" ng-bind="building.price"></span>
+				<button ng-click="purchaseBuilding(building.name)">Purchase</button>
 			</div>
 		</div>
 		<div id="page-2" class="market-page" ng-show="isSelected(2)">
-			<div ng-repeat="upgrade in upgrades" class="item" ng-class="{'not-for-sale':isNotForSale(upgrade.price)}">
+			<div ng-repeat="upgrade in upgrades" class="item" ng-class="{'available':isUpgradeAvailable(upgrade.name)}">
 				<img class="item-img" ng-src="{{ upgrade.img }}"></img>
 				<span class="item-name" ng-bind="upgrade.name"></span></span>
 				<span class="item-price" ng-bind="upgrade.price"></span>	
@@ -80,6 +80,7 @@
 			research: 0,
 			global: 1
 		};
+		$rootScope.buildingSet = {};
 		cookieService.initProgress();
 	}]);
 	
@@ -161,10 +162,41 @@
 		promise.then(function(data) {
 			$scope.buildings = data.data.buildings;
 			$scope.upgrades = data.data.upgrades;
+			// initialize buildingSet once JSON is loaded
+			for(var i = 0; i < $scope.buildings.length; i++) {
+				$rootScope.buildingSet[$scope.buildings[i].name] = 0;
+			}
+			$scope.isBuildingAvailable = function(buildingName) {
+				var b = $scope.buildings[buildingName];
+				var r = $rootScope;
+				if(b.energy >= r.energy && b.food >= r.food && b.water >= r.water && b.materials >= r.materials && b.research >= r.research) {
+					return true;
+				}
+				return false;
+			};
+			$scope.isUpgradeAvailable = function(upgradeName) {
+				var u = $scope.upgrades[upgradeName];
+				var r = $rootScope;
+				if(u.energy >= r.energy && u.food >= r.food && u.water >= r.water && u.materials >= r.materials && u.research >= r.research) {
+					return true;
+				}
+				return false;
+			};
+			$scope.purchaseBuilding = function(buildingName) {
+				if ($scope.building != undefined) {
+					var b = $scope.buildings[buildingName];
+					var r = $rootScope;
+					if(b.energy >= r.energy && b.food >= r.food && b.water >= r.water && b.materials >= r.materials && b.research >= r.research) {
+						$rootScope.buildingSet[buildingName] += 1;
+						r.energy -= b.energy;
+						r.food -= b.food;
+						r.water -= b.water;
+						r.materials -= b.materials;
+						r.research -= b.research;
+					}
+				}
+			};
 		});
-		$scope.isNotForSale = function(price) {
-			return $rootScope.score < price;
-		};
 	}]);
 </script>
 </html>

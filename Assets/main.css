@@ -57,11 +57,10 @@ body {
 	border: solid 2px #000000;
 	border-top: solid 2px #999999;
 	border-left: solid 2px #999999;
-	cursor: pointer
-}
-.not-for-sale {
 	opacity: 0.5;
-	cursor: default;
+}
+.available {
+	opacity: 1.0;
 }
 .item-img {
 	display: block;
